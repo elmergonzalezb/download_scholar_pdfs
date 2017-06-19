@@ -1,5 +1,5 @@
 # download_scholar_pdfs
-This is repository hosts a simple, short script that allows batch .PDF downloading from a list of DOIs and/or titles. PDF files are retrieved/download from libgen scholar archives.
+This repository hosts a simple, short script that allows batch .PDF downloading from a list of DOIs and/or titles. PDF files are retrieved/download from libgen scholar archives.
 
 The batch_download.py script can be used from command line, as such:
 
