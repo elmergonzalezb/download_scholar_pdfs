@@ -1,10 +1,10 @@
 import urllib2,requests,re,os,sys
-import multiprocessing as mp
 
 file_list_of_ids=str(sys.argv[1])
 if len(sys.argv) > 2:
 	if_mp=str(sys.argv[2])
 	num_of_cores=int(sys.argv[3])
+	import multiprocessing as mp
 
 def chunks(l, n):
 
