@@ -7,8 +7,6 @@ except ImportError:
 	print 'You need to install \'requests\' module!'
 	sys.exit()
 
-file_list_of_ids=str(sys.argv[1])
-
 def chunks(l, n):
 
 	for i in range(0, len(l), n):
@@ -68,20 +66,20 @@ def download_doi_pdf(doi):
 
 		m=re.findall(r'source="http(.*?)pdf',the_page)
 		if len(m)==0:
-			print 'Couldn\'t find the PDF link'
-			print
-			with open('cdnt.txt', 'a+') as cf:
-				print >>cf, my_doi
+			print 'Couldn\'t find the PDF link\n'
 			return
+
 		m=list(set(m))
 		my_pdf='http' + m[0] + 'pdf'
 		download_file(my_doi, my_pdf)
 
+		with open('pdf_exists.txt', 'a+') as cf:
+			print >>cf, my_doi
+
 	else:
 		print 'Couldn\'t find the PDF link'
 		print
-		with open('cdnt.txt', 'a+') as cf:
-			print >>cf, my_doi
+
 		return
 
 def work(dois):
@@ -98,19 +96,24 @@ def work(dois):
 			print doi + ' - Exists!'
 			print 
 
-os.system('cat cdnt.txt | sort | uniq > cdnt.txt')
+file_list_of_ids=str(sys.argv[1])
 
-with open(file_list_of_ids, 'r') as f:
-	dois = [line.rstrip() for line in f]
+with open(file_list_of_ids, 'r') as lf:
+	dois = [line.rstrip() for line in lf]
 
-with open('cdnt.txt', 'r') as f:
-	not_dois = [line.rstrip() for line in f]
+saved_dois=[re.sub('_', '/', x.rstrip('.pdf')) for x in os.listdir('.') if x.endswith('pdf')]
 
-dois=[x for x in dois if x not in not_dois]
+if len(saved_dois)>0:
+
+	print '\nThe PDF files for the below DOIs (N=' + str(len(saved_dois)) + ') are already downloaded/saved:\n'
+	for i in saved_dois:
+		print i
+
+dois=[x for x in dois if x not in saved_dois]
 
 try:
 	imp.find_module('multiprocessing')
-	num_of_cores = int(raw_input( '\nmultiprocessing module was found. How many cores do you want to use? (If only one just enter 1)\n Number of cores: '))
+	num_of_cores = int(raw_input( '\n >> multiprocessing module was found.\n\n-Do you want to use multiple cores?\n\n-If yes, enter the number of cores(>1), else just type 1: '))
 	import multiprocessing as mp
 	if num_of_cores==1:
 		work(dois)
