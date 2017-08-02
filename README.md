@@ -5,8 +5,8 @@ The batch_download.py script can be used from command line, as such:
 
 $python batch_download.py list_of_dois_or_titles.txt
 
-If you have multiple CPU cores available and want to use the multiprocessing implementation to speed up the http request / .PDF downloading process, use as such:
+If you have multiprocessing module installed and want to put it into use to speed up the http request / .PDF downloading process, use as such:
 
-$python batch_download.py list_of_dois_or_titles.txt True 10
+$python batch_download.py list_of_dois_or_titles.txt N
 
-(where True is True for multiprocessing, and the following integer the number of the available cores)
+(where N is the number of cores you may want to utilize)
