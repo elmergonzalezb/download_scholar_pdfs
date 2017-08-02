@@ -1,10 +1,13 @@
-import urllib2,requests,re,os,sys
+import urllib2,re,os,sys,imp
+
+try:
+	imp.find_module('requests')
+	import requests
+except ImportError:
+	print 'You need to install \'requests\' module!'
+	sys.exit()
 
 file_list_of_ids=str(sys.argv[1])
-if len(sys.argv) > 2:
-	if_mp=str(sys.argv[2])
-	num_of_cores=int(sys.argv[3])
-	import multiprocessing as mp
 
 def chunks(l, n):
 
@@ -22,10 +25,12 @@ def multi(dois,num_of_cores):
 def download_file(doi, download_url):
 	response = requests.get(download_url)
 	doi=re.sub('/', '_', doi)
+	if len(doi)>259:
+		doi=doi[:260]
 	with open(doi + '.pdf', 'wb') as fw:
 		fw.write(response.content)
 
-	print 'Completed'
+	print 'Saved'
 	print
 
 def download_doi_pdf(doi):
@@ -103,7 +108,13 @@ with open('cdnt.txt', 'r') as f:
 
 dois=[x for x in dois if x not in not_dois]
 
-if if_mp=='True':
-	multi(dois,num_of_cores)
-else:
+try:
+	imp.find_module('multiprocessing')
+	num_of_cores = int(raw_input( '\nmultiprocessing module was found. How many cores do you want to use? (If only one just enter 1)\n Number of cores: '))
+	import multiprocessing as mp
+	if num_of_cores==1:
+		work(dois)
+	else:
+		multi(dois,num_of_cores)
+except ImportError:
 	work(dois)
